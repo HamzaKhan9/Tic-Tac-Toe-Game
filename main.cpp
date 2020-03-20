@@ -9,6 +9,7 @@ using namespace std;
 //functions signatures
 void main_menu();
 void setting_menu();
+void board_size();
 void bg_color_menu();
 void bl_color_menu();
 void b_back_color_menu();
@@ -16,7 +17,7 @@ void player_marker();
 void marker_color();
 
 struct State {
-    char main_array[BOARD_SIZE][BOARD_SIZE];
+    vector<vector<char>> main_array;
     bool curr_player;
     _location curr_pos;
     bool game_over;
@@ -34,18 +35,6 @@ void fillCellColor(string color , int x , int y)
     int y2 = y1 + LINE_GAP.y;
     clrdLine(color,x1,y1,x2,y2);
     }
-
-//fill initial state array
-void fill_array(char arr[][BOARD_SIZE], char marker){
-    for(int i=0; i<BOARD_SIZE; i++)
-        {
-            for(int j=0; j<BOARD_SIZE; j++)
-            {
-                arr[i][j]=marker;
-            }
-
-        }
-}
 
 void init(){
     setBgClr(BG_CLR, true);
@@ -238,7 +227,8 @@ void getUserMove(){
 }
 
 void startGame(){
-    fill_array(state.main_array, EMPTY_MARKER);
+    //fill_array(state.main_array, EMPTY_MARKER);
+    state.main_array = vector<vector<char>>(BOARD_SIZE, vector<char>(BOARD_SIZE,EMPTY_MARKER));
     state.curr_player = 0;
     state.curr_pos = {0, 0};
     state.game_over = false;
@@ -253,6 +243,7 @@ void startGame(){
             stateArray2Board();
             getUserMove();
         }
+    stateArray2Board();
 
 }
 
@@ -262,7 +253,7 @@ void setting_menu(){
     settingMenu.setHeading("SETTINGS");
     switch(settingMenu.drawMenu()){
     case 1 :
-            cout << "FEATURE NOT INTRODUCED";
+            board_size();
             break;
     case 2 :
         bg_color_menu();
@@ -284,6 +275,35 @@ void setting_menu(){
     }
 
 }
+
+void board_size()
+    {
+    system("cls");
+    Menu boardSize({"3x3","5x5","7x7","9x9","BACK"});
+    boardSize.setHeading("SELECT BOARD SIZE");
+    int selectedSize = boardSize.drawMenu();
+    switch(selectedSize){
+        case 1:
+            BOARD_SIZE=3;
+            setting_menu();
+            break;
+        case 2:
+            BOARD_SIZE=5;
+            setting_menu();
+            break;
+        case 3:
+            BOARD_SIZE=7;
+            setting_menu();
+            break;
+        case 4:
+            BOARD_SIZE=9;
+            setting_menu();
+            break;
+        case 5:
+            setting_menu();
+            break;
+            }
+    }
 
 void bg_color_menu()
 {
@@ -343,9 +363,10 @@ void player_marker(){
             if(selectedPlayerMarker1 == MARKERSTRING.size())
             player_marker();
             else{
-            PLAYER_1_MARKER=(MARKERSTRING[selectedPlayerMarker1-1])[0];
+            PLAYER_1_MARKER=MARKERSTRING[selectedPlayerMarker1-1][0];
             player_marker();
             }
+            break;
     }
         case 2 :
     {
@@ -356,13 +377,14 @@ void player_marker(){
             if(selectedPlayerMarker2 == MARKERSTRING.size())
             player_marker();
             else{
-            PLAYER_2_MARKER=(MARKERSTRING[selectedPlayerMarker2-1])[0];
+            PLAYER_2_MARKER=MARKERSTRING[selectedPlayerMarker2-1][0];
             player_marker();
             }
+            break;
     }
         case 3 :
             setting_menu();
-
+            break;
     }
 
 }
