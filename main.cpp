@@ -7,6 +7,7 @@ using namespace std;
 
 
 //functions signatures
+void startGame();
 void main_menu();
 void setting_menu();
 void board_size();
@@ -15,6 +16,7 @@ void bl_color_menu();
 void b_back_color_menu();
 void player_marker();
 void marker_color();
+void print_curr_player();
 
 struct State {
     vector<vector<char>> main_array;
@@ -24,8 +26,7 @@ struct State {
 };
 State state;
 
-void fillCellColor(string color , int x , int y)
-    {
+void fillCellColor(string color , int x , int y){
         int factor = BOARD_SIZE/2;
     _location offset = {LINE_GAP.x + BOARD_LINE_THICKNESS.x, LINE_GAP.y + BOARD_LINE_THICKNESS.y};
     _location start = {START_POS.x - factor*offset.x - LINE_GAP.x/2, START_POS.y - factor*offset.y - LINE_GAP.y/2};
@@ -59,17 +60,37 @@ char GetArrowKeysInput(){
         return 'R';
     case 13:
         return 'E';
+    case 27:
+        return 'B';
     }
     }
 }
 
+void userInput(){
+    cout << "\n PRESS ENTER TO PLAY AGAIN AND PRESS ESCAPE TO GET TO MENU";
+            char Input=GetArrowKeysInput();
+            if(Input=='E')
+                startGame();
+            else if(Input=='B')
+                main_menu();
+}
+
 void renderBoard(){
 
-    /*int y1 = START_POS.y - LINE_GAP.y/2 - (BOARD_SIZE/2)*LINE_GAP.y - (BOARD_SIZE/2 + 1)*BOARD_LINE_THICKNESS.y;
-    int y2 = START_POS.y + LINE_GAP.y/2 + (BOARD_SIZE/2)*LINE_GAP.y + (BOARD_SIZE/2 + 1)*BOARD_LINE_THICKNESS.y;
-    int x1 = START_POS.x - LINE_GAP.x/2 - (BOARD_SIZE/2)*LINE_GAP.x - (BOARD_SIZE/2 + 1)*BOARD_LINE_THICKNESS.x;
-    int x2 = START_POS.x + LINE_GAP.x/2 + (BOARD_SIZE/2)*LINE_GAP.x + (BOARD_SIZE/2 + 1)*BOARD_LINE_THICKNESS.x;
-    clrdLine(BOARD_BG_CLR,x1,y1,x2,y2);*/
+    if(BOARD_SIZE==9)
+    {
+    Locate(34,1);
+    cout << "TIC-TAK-TOE";
+    Locate(55,1);
+    cout << "PRESS ESCAPE TO GOTO MENU";
+    }
+    else
+    {
+    Locate(34,4);
+    cout << "TIC-TAK-TOE";
+    Locate(55,3);
+    cout << "PRESS ESCAPE TO GOTO MENU";
+    }
 
     for(int i=0; i<BOARD_SIZE+1 ; i++)
     {
@@ -138,10 +159,18 @@ void gameLogic(int row=BOARD_SIZE, int col=BOARD_SIZE){
             else hCounter++;
         }
         if(hCounter == col){
-            cout << "Row " << r << r << r << " filled!";
-            state.game_over = true;
-            return;
-        }
+            if(BOARD_SIZE==9)
+            {
+            Locate(5,40);
+            cout << "PLAYER WITH MARKER " << firstMarker << " WINS !";
+            userInput();
+            }
+            else
+            {
+            Locate(5,35);
+            cout << "PLAYER WITH MARKER " << firstMarker << " WINS !" ;
+            userInput();
+            }
     }
 
     //for cols
@@ -157,13 +186,22 @@ void gameLogic(int row=BOARD_SIZE, int col=BOARD_SIZE){
             else vCounter++;
         }
         if(vCounter == row){
-            cout << "Column " << c << " filled!";
-            state.game_over = true;
-            return;
+            if(BOARD_SIZE==9)
+            {
+            Locate(5,40);
+            cout << "PLAYER WITH MARKER " << firstMarker << " WINS !";
+            userInput();
+            }
+            else
+            {
+            Locate(5,35);
+            cout << "PLAYER WITH MARKER " << firstMarker << " WINS !" ;
+            userInput();
+            }
         }
     }
 
-     char firstMarker = state.main_array[1][1];
+    firstMarker = state.main_array[1][1];
 
      //for left diagonal
      int ldCounter = 0;
@@ -176,9 +214,18 @@ void gameLogic(int row=BOARD_SIZE, int col=BOARD_SIZE){
             else ldCounter++;
      }
      if(ldCounter == row){
-            cout << "Diagonal left filled!";
-            state.game_over = true;
-            return;
+            if(BOARD_SIZE==9)
+            {
+            Locate(5,40);
+            cout << "PLAYER WITH MARKER " << firstMarker << " WINS !";
+            userInput();
+            }
+            else
+            {
+            Locate(5,35);
+            cout << "PLAYER WITH MARKER " << firstMarker << " WINS !" ;
+            userInput();
+            }
     }
 
     //for right diagonal
@@ -192,20 +239,38 @@ void gameLogic(int row=BOARD_SIZE, int col=BOARD_SIZE){
             else rdCounter++;
      }
      if(rdCounter == row){
-            cout << "Diagonal right filled!";
-            state.game_over = true;
-            return;
+            if(BOARD_SIZE==9)
+            {
+            Locate(5,40);
+            cout << "PLAYER WITH MARKER " << firstMarker << " WINS !";
+            userInput();
+            }
+            else
+            {
+            Locate(5,35);
+            cout << "PLAYER WITH MARKER " << firstMarker << " WINS !" ;
+            userInput();
+            }
         }
 
     //check draw condition
     if(isDrawn){
-        cout << "Match Drawn";
-        WriteTextAtLoc("Match Drawn", 0, 0);
-        state.game_over = true;
-        return;
+        if(BOARD_SIZE==9)
+            {
+            Locate(5,40);
+            cout << "MATCH IS DRAWN";
+            userInput();
+            }
+            else
+            {
+            Locate(5,35);
+            cout << "MATCH IS DRAWN";
+            userInput();
+            }
     }
 
     state.curr_player= !state.curr_player;
+}
 }
 
 void getUserMove(){
@@ -218,6 +283,8 @@ void getUserMove(){
         state.curr_pos.x--;
     else if(Input=='R' && state.curr_pos.x < BOARD_SIZE-1)
         state.curr_pos.x++;
+    else if(Input=='B')
+        main_menu();
     else if(Input=='E') {
         if(state.main_array[state.curr_pos.y][state.curr_pos.x] == EMPTY_MARKER){
             state.main_array[state.curr_pos.y][state.curr_pos.x]= getCurrMarker(state.curr_player);
@@ -233,18 +300,31 @@ void startGame(){
     state.curr_pos = {0, 0};
     state.game_over = false;
 
+    system("cls");
     renderBoard();
     //programlogic
     while(state.game_over == false)
         {
-            //rendering board
-            //renderBoard();
+            print_curr_player();
             fillCellColor(HIGHLIGHT_CLR, state.curr_pos.x, state.curr_pos.y);
             stateArray2Board();
             getUserMove();
         }
     stateArray2Board();
 
+}
+
+void print_curr_player(){
+    if(state.curr_player==0)
+    {
+        Locate(3,0);
+        cout << "1st PLAYER TURN " << PLAYER_1_MARKER << "                                                                      ";
+    }
+    else
+    {
+        Locate(3,0);
+        cout << "                                                      2nd PLAYER TURN  " << PLAYER_2_MARKER;
+    }
 }
 
 void setting_menu(){
@@ -276,8 +356,7 @@ void setting_menu(){
 
 }
 
-void board_size()
-    {
+void board_size(){
     system("cls");
     Menu boardSize({"3x3","5x5","7x7","9x9","BACK"});
     boardSize.setHeading("SELECT BOARD SIZE");
@@ -305,8 +384,7 @@ void board_size()
             }
     }
 
-void bg_color_menu()
-{
+void bg_color_menu(){
     system("cls");
     Menu bgClrMenu(colorNames);
     bgClrMenu.setHeading("SELECT COLOR");
@@ -320,8 +398,7 @@ void bg_color_menu()
 
 }
 
-void bl_color_menu()
-{
+void bl_color_menu(){
 {
     system("cls");
     Menu blClrMenu(colorNames);
@@ -336,8 +413,7 @@ void bl_color_menu()
 }
 }
 
-void b_back_color_menu()
-{
+void b_back_color_menu(){
     system("cls");
     Menu bBackClrMenu(colorNames);
     bBackClrMenu.setHeading("SELECT COLOR");

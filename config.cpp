@@ -23,4 +23,3 @@ vector<string> colorCodes = {"Black","Blue","Green","Cyan","Red","Purple","Yello
 vector<string> colorNames = {"Black","Blue","Green","Cyan","Red","Purple","Yellow","White","Gray","Light Blue","Light Green",
                         "Light Cyan", "Vermillion", "Light Purple", "Light Yellow", "Bright White", "Back"};
 vector<string> MARKERSTRING = {"O" , "X" , "?" , "#" , "$" , "*" , "@"};
-
